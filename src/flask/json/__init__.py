@@ -1,5 +1,6 @@
 import io
-import json as _json
+import decimal
+
 import typing as t
 import uuid
 import warnings
@@ -40,19 +41,10 @@ class JSONEncoder(_json.JSONEncoder):
     """
 
     def default(self, o: t.Any) -> t.Any:
-        """Convert ``o`` to a JSON serializable type. See
-        :meth:`json.JSONEncoder.default`. Python does not support
-        overriding how basic types like ``str`` or ``list`` are
-        serialized, they are handled before this method.
-        """
-        if isinstance(o, date):
-            return http_date(o)
-        if isinstance(o, uuid.UUID):
+
+        if isinstance(o, decimal.Decimal):
             return str(o)
-        if dataclasses and dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
-        if hasattr(o, "__html__"):
-            return str(o.__html__())
+
         return super().default(o)
 
 
